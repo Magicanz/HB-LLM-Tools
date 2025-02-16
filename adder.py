@@ -102,7 +102,7 @@ def get_json_from_gemini(recognized_text: str, location_list: list[str], generat
             Capitalize the text nicely. Number should be 1 unless otherwise specified.
             Please create a json object that has all of these locations connected to the items that are in them.
             If something is a speech recognition error, you would correct the item.
-            {"Try to generate a short description for each item, if possible." if config["SETTINGS"]["generate_description"] else "Leave the description field blank."}
+            {"Try to generate a short description for each item, if possible." if config.getboolean("SETTINGS", "generate_description") else "Leave the description field blank."}
             
             Locations have to be in the following list, if none fits put "error":
             {location_list}
@@ -310,7 +310,7 @@ def process_file(filename: str):
 
     print(f"Processing file: {filename}")
 
-    if config["SETTINGS"]["output_into_csv"]:
+    if config.getboolean("SETTINGS", "output_into_csv"):
         out_name = input("Choose name of output file (without .csv): ")
         csv_from_sound_file(filename, out_name + ".csv")
     else:
