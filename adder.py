@@ -134,8 +134,10 @@ def write_to_file(filename: str, data: list[dict]):
         for entry in data:
             file.write(f"<{entry['location']}>\n")
             for item in entry['items']:
-                file.write(f"{item['number']} ::-:: {item['item']} ::-:: {item['description']}\n")
-            file.write("\n")
+                file.write(f"{item['number']} ::-:: {item['item']}")
+                if config.getboolean("SETTINGS", "generate_description"):
+                    file.write(f" ::-:: {item['description']}")
+                file.write("\n")
 
 
 # Load after file editing is complete
@@ -155,9 +157,13 @@ def load_from_file(filename: str) -> list[dict]:
 
                 current_location = line[1:-1]  # Strip the < and >
                 current_items = []
-            elif " ::-:: " in line:
-                item = line.split(" ::-:: ", 2)
-                current_items.append({"item": item[1], "number": int(item[0]), "description": item[2]})
+            elif "::-::" in line:
+                item = line.split("::-::", 2)
+                if config.getboolean("SETTINGS", "generate_description"):
+                    current_items.append({"item": item[1].strip(), "number": int(item[0].strip()),
+                                          "description": item[2].strip()})
+                else:
+                    current_items.append({"item": item[1].strip(), "number": int(item[0].strip())})
 
         if current_location:
             updated_data.append({"location": current_location, "items": current_items})
@@ -206,8 +212,8 @@ def add_item(item: dict, location: str, auth_key: str) -> bool:
     data = {
         "name": item["item"],
         "locationId": location,
-        "description": item["description"],
-        "quantity": item["number"]
+        "quantity": item["number"],
+        "description": item.get("description", " ")
     }
 
     res = requests.post(url, headers=headers, json=data)
@@ -249,7 +255,7 @@ def generate_importable_csv(filename: str, data: list[dict]):
                     "HB.name": item["item"],
                     "HB.quantity": item["number"],
                     "HB.location": location,
-                    "HB.description": item["description"]
+                    "HB.description": item.get("description", " ")
                 })
 
     print(f"Generated file {filename}")
