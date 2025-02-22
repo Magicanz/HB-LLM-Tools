@@ -80,12 +80,15 @@ def helper_location_tree(node: dict) -> (list[str], list[str]):
 
 # Convert audio file into text using speech recognition
 def interpret_sound_file(filename: str) -> str:
-    r = sr.Recognizer()
-
-    with sr.AudioFile(filename) as source:
-        audio_data = r.record(source)
-        text = r.recognize_google(audio_data)
-        return text
+    try:                # Try to read the audio file as PCM WAV, AIFF/AIFF-C, or Native FLAC
+        r = sr.Recognizer()
+        with sr.AudioFile(filename) as source:
+            audio_data = r.record(source)
+            text = r.recognize_google(audio_data)
+            return text
+    except ValueError as e:
+        print("Audio file could not be read as PCM WAV, AIFF/AIFF-C, or Native FLAC; check if file is corrupted or in another format")
+        sys.exit(1)     # Exit program if audio file cannot be read
 
 
 # Process AI response to structure recognized items and locations
