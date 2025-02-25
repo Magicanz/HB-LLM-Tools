@@ -12,6 +12,10 @@ The program will not generate new locations and will only use the ones allowed b
 
 You have the option to check through all the added items before they are committed to Homebox.
 
+## Requirements
+The project requires Python and the modules included in requirements.txt.
+
+The voice recognition only works on WAV files, however the program has file conversion built in. For this to work FFMPEG is required to be installed on your computer. Otherwise, processing WAV files will still work. 
 
 ## Usage
 
