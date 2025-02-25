@@ -25,6 +25,12 @@ class Additions(BaseModel):
     items: list[Item]
 
 
+# Function to end program safely
+def end_safely(status: int):
+    input("Press enter to exit program...")
+    sys.exit(status)
+
+
 # Fetch authentication token for Homebox API
 def get_homebox_auth_key() -> str:
     if not all([os.getenv("HOMEBOX_URL"), os.getenv("HOMEBOX_USERNAME"), os.getenv("HOMEBOX_PASSWORD")]):
@@ -84,6 +90,7 @@ def helper_location_tree(node: dict) -> (list[str], list[str]):
 def convert_sound_file(filename: str) -> str:
     pattern = r"([^\\/]+)\.([^\\/]+)$"
     matches = re.search(pattern, filename)
+    converted_name = ""
     if not matches:  # Regex not matching a file with file extension
         print("Faulty file path, does this lead to a file with a valid name and file extension?")
         sys.exit(1)
@@ -98,10 +105,10 @@ def convert_sound_file(filename: str) -> str:
             audio_segment.export(converted_name, format="wav")
         except CouldntDecodeError:  # If file extension is not convertable by FFMPEG
             print("Could not decode file. Is file an audio file, and is the file type supported by FFMPEG?")
-            sys.exit(1)
+            end_safely(1)
         except RuntimeWarning:
-            print("Could not find FFMPEG (or avconv). Make sure to install it if you wish to use the attempt_conversion option!")
-            sys.exit(1)
+            print("Could not find FFMPEG. Make sure to install it if you wish to use the attempt_conversion option!")
+            end_safely(1)
         return converted_name
 
 
@@ -118,7 +125,7 @@ def interpret_sound_file(filename: str) -> str:
             return text
     except ValueError as e:
         print("Audio file could not be read as PCM WAV, AIFF/AIFF-C, or Native FLAC; check if file is corrupted or in another format.")
-        sys.exit(1)     # Exit program if audio file cannot be read
+        end_safely(1)    # Exit program if audio file cannot be read
 
 
 # Process AI response to structure recognized items and locations
@@ -373,3 +380,5 @@ if __name__ == "__main__":
             process_file(arg)
     else:
         main()
+
+    end_safely(0)
