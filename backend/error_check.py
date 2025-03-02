@@ -9,7 +9,7 @@ LOAD_PATTERN = r"::(\w+)::\s*(.*?)(?=\s+::|\s*$)"
 
 def write_to_file_inner(file: TextIO, item: dict):
     for prop in PROPERTY_ORDER:
-        if prop in item:
+        if prop in item and item[prop]:
             file.write(f"::{prop}:: {item[prop]} ")
     file.write("\n")
 
