@@ -1,5 +1,5 @@
-# Homebox Voice Tools
-### Voice recognition & LLM supported tools for Homebox storage
+# Homebox LLM Tools
+### LLM supported tools with Voice Recognition for Homebox storage
 This is a program that does various things using voice recognition and LLMs to interact with your HomeBox storage. 
 
 The current functionality is:
