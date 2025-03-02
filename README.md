@@ -1,24 +1,20 @@
-# Homebox Voice Adder
-### Voice recognition & LLM supported adding of items into Homebox storage
-This is a program that allows you to speak a line out loud stating where to store items, and then a list of items separated by "next". 
+# Homebox Voice Tools
+### Voice recognition & LLM supported tools for Homebox storage
+This is a program that does various things using voice recognition and LLMs to interact with your HomeBox storage. 
 
-An example of a usable string would be:
+The current functionality is:
 
-"To drawer five of large cabinet in Garage, add a quarter inch spanner, next a Philips head screwdriver and next a Large Paintbrush. To drawer 3 of same cabinet, add five glass jars."
+- Adder: Use your voice to add items to locations in your Homebox storage.
 
-And have your voice recognised as a string which will be put through the Gemini LLM to generate objects that then are automatically added to Homebox through the Homebox API, or added to a CSV that can be imported by Homebox.
-
-The program will not generate new locations and will only use the ones allowed by your setup.
-
-You have the option to check through all the added items before they are committed to Homebox.
+Further explanations for the functionality is further below.
 
 ## Requirements
-The project requires Python and the modules included in requirements.txt.
+- HomeBox
+- Python
+- [Google Gemini API Key](https://aistudio.google.com/app/apikey)
+- Optionally FFMPEG for audio conversion, otherwise, processing WAV files will still work.
 
-The voice recognition only works on WAV files, however the program has file conversion built in. For this to work FFMPEG is required to be installed on your computer. Otherwise, processing WAV files will still work. 
-
-## Usage
-
+## Installation
 
 Clone the repository
 
@@ -29,7 +25,7 @@ Clone the repository
 Go to the project directory
 
 ```bash
-  cd HB-Voice-Adder
+  cd HB-Voice-Tools
 ```
 
 Install Dependencies
@@ -42,9 +38,25 @@ Add Homebox URL (or IP with port, keep http(s)://), Username and Password to the
 
 You also need to add an API key from Google Gemini to the .env file. This can be had from [This Link](https://aistudio.google.com/app/apikey).
 
-Edit `config.ini` to save to a CSV instead of adding with API, or to have the LLM add simple descriptions to the items. 
+Edit `config.ini` to change configurable settings. 
 
-Run the code by dropping a .wav file onto `adder.py`
+## Adder
+
+This is a program that allows you to speak a line out loud stating where to store items, and then a list of items separated by "next". 
+
+An example of a usable string would be:
+
+"To drawer five of large cabinet in Garage, add a quarter inch spanner, next a Philips head screwdriver and next a Large Paintbrush. To drawer 3 of same cabinet, add five glass jars."
+
+And have your voice recognised as a string which will be put through the Gemini LLM to generate objects that then are automatically added to Homebox through the Homebox API, or added to a CSV that can be imported by Homebox.
+
+The program will not generate new locations and will only use the ones allowed by your setup.
+
+You have the option to check through all the added items before they are committed to Homebox.
+
+In `config.ini` you can choose to output to a CSV instead of interacting directly with the API, and you can make the LLM generate a short description for the items based on their names. 
+
+Run the code by dropping an audio file onto `adder.py`
 
 You may also run `adder.py` through the command line or an editor. 
 
