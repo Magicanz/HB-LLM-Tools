@@ -12,7 +12,7 @@ Further explanations for the functionality is further below.
 - HomeBox
 - Python
 - [Google Gemini API Key](https://aistudio.google.com/app/apikey)
-- Optionally FFMPEG for audio conversion
+- Optionally FFMPEG for audio conversion, otherwise, processing WAV files will still work.
 
 ## Installation
 
