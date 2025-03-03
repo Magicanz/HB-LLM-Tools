@@ -5,6 +5,7 @@ This is a program that does various things using voice recognition and LLMs to i
 The current functionality is:
 
 - Adder: Use your voice to add items to locations in your Homebox storage.
+- Labeler: Let an LLM label your items with your predefined labels, according to name and description.
 
 Further explanations for the functionality is further below.
 
@@ -62,4 +63,18 @@ You may also run `adder.py` through the command line or an editor.
 
 ```bash
 python adder.py
+```
+
+## Labler
+
+This is a program that allows you to let an LLM set labels for all your items.
+
+You can choose through config whether this is done only on items that don't already have labels, or if it should be done for all items. 
+
+Tha LLM will only use labels that you have already defined in Homebox. 
+
+This program is run through the command line (or an editor).
+
+```bash
+python labeler.py
 ```
