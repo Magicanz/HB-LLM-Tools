@@ -2,7 +2,7 @@ from backend.general import config, end_safely, translate_locations
 from backend.api_access import get_homebox_auth_key, get_locations, add_item
 from backend.voice_recognition import interpret_sound_file
 from backend.llm import get_parsed_list
-from backend.error_check import open_in_editor, write_to_file_with_header, load_from_file_with_header
+from backend.error_check import check_for_errors_with_header
 
 
 import os
@@ -50,17 +50,6 @@ def process_with_llm(recognised_text: str, location_list: list[str]) -> list[dic
         }
 
     return get_parsed_list(prompt, llm_config)
-
-
-# Check the results from the LLM for erroneous locations/items
-def check_for_errors(data: list[dict]) -> list[dict]:
-    temp_file = "temp"
-
-    write_to_file_with_header(temp_file, data, "location", "items")
-
-    open_in_editor(temp_file)
-
-    return load_from_file_with_header(temp_file, "location", "items")
 
 
 # Add all items in a data dict to Homebox
@@ -113,7 +102,7 @@ def common_process(filename: str) -> (list[dict], list[str], list[str], str):
 
     print("Formated by LLM!")
 
-    data = check_for_errors(data)
+    data = check_for_errors_with_header(data, "location", "items")
 
     print("Data checked for errors!")
 
