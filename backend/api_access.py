@@ -58,6 +58,36 @@ def helper_location_tree(node: dict) -> (list[str], list[str]):
     return locations, ids
 
 
+# Get all labels from Homebox instance and return as list with names as keys
+def get_labels(auth_key: str) -> dict:
+    url = f"{os.getenv('HOMEBOX_URL')}/api/v1/labels"
+    headers = {"Authorization": f"{auth_key}", "Accept": "application/json"}
+    res = requests.get(url, headers=headers)
+
+    res_dict = res.json()
+    return_dict = {}
+
+    for label in res_dict:
+        return_dict[label["name"]] = label
+
+    return return_dict
+
+
+# Get all items in Homebox storage into a dict with ID as key
+def get_all_items(auth_key: str) -> dict:
+    url = f"{os.getenv('HOMEBOX_URL')}/api/v1/items"
+    headers = {"Authorization": f"{auth_key}", "Accept": "application/json"}
+    res = requests.get(url, headers=headers)
+
+    res_dict = res.json()
+    return_dict = {}
+
+    for item in res_dict["items"]:
+        return_dict[item["id"]] = item
+
+    return return_dict
+
+
 # Add an item to Homebox using the Homebox API
 def add_item(item: dict, auth_key: str) -> bool:
     url = f"{os.getenv('HOMEBOX_URL')}/api/v1/items"
@@ -67,5 +97,27 @@ def add_item(item: dict, auth_key: str) -> bool:
     res = requests.post(url, headers=headers, json=data)
 
     if res.status_code == 201:
+        return True
+    return False
+
+
+# This replaces the item! Remember to submit with gotten data, not just the patched data.
+def update_item(auth_key: str, item_id: str, item_data: dict) -> bool:
+    url = f"{os.getenv('HOMEBOX_URL')}/api/v1/items/{item_id}"
+    headers = {"Authorization": f"{auth_key}", "Accept": "application/json", "Content-Type": "application/json"}
+
+    item_data["locationId"] = item_data["location"]["id"]
+    item_data["labelIds"] = []
+    for label in item_data.get("labels", []):
+        item_data["labelIds"].append(label["id"])
+
+    if "parent" in item_data:
+        item_data["parentId"] = item_data["parent"]["id"]
+    else:
+        item_data["parentId"] = None
+
+    res = requests.put(url, headers=headers, json=item_data)
+
+    if res.status_code == 200:
         return True
     return False
